@@ -1,9 +1,10 @@
-
 import type { Metadata } from "next";
 import Header from "@/layout/header";
 import Footer from "@/layout/footer";
 import Aside from "@/layout/aside";
 import { Geist, Geist_Mono } from "next/font/google";
+import AuthProvider from "@/components/authprovider"; // 1. Added this import
+import PageWrapper from "@/layout/wrapper";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,14 +24,19 @@ export const metadata: Metadata = {
 
 const RootLayout: React.FC<Readonly<{ children: React.ReactNode }>> = ({ children }) => {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
-        <Header />
-        <div className="flex flex-1">
-          <Aside />
-          {children}
-        </div>
-        <Footer /> 
+    <html lang="en" className="h-full" suppressHydrationWarning>
+      <body className="flex flex-col h-screen bg-slate-950 text-slate-200">
+        {/* 2. Wrapped your existing layout in the provider */}
+        <AuthProvider>
+          <Header />
+          <div className="flex flex-1 overflow-hidden min-h-0">
+            <Aside /> 
+            <PageWrapper>
+              {children}
+            </PageWrapper>
+          </div>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

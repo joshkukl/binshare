@@ -1,45 +1,61 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
-import { Button } from "@mui/material";
+import { FaShieldAlt, FaUserSecret, FaFire } from "react-icons/fa";
 
 const About: React.FC = () => {
-  const [count, setCount] = useState<number>(0);
   return (
-    <div className="flex w-full items-center justify-center bg-zinc-50 font-sans dark:bg-black p-8">
-      <main className="flex w-full max-w-3xl flex-col items-center py-12 px-8 bg-white dark:bg-black rounded-lg shadow-md sm:items-start">
-        <h1 className="text-4xl font-bold mb-6">About DropVault</h1>
+    <div className="flex flex-col flex-1 w-full bg-black overflow-y-auto">
+      <main className="flex flex-col items-center justify-start w-full max-w-4xl mx-auto p-8 pt-12 text-slate-200">
         
-        <div className="relative w-full h-64 mb-6 overflow-hidden rounded-lg">
+        <h1 className="text-4xl font-bold mb-8">About BinShare</h1>
+        
+        <div className="relative w-full h-64 mb-10 overflow-hidden rounded-xl border border-slate-800 shadow-2xl">
           <Image
             src="/vaultimage_0.jpg"
-            alt="About Image"
+            alt="BinShare Vault Concept"
             fill
             style={{ objectFit: 'cover' }}
-            className="rounded-lg"
           />
         </div>
 
-        <p className="text-lg text-gray-700 dark:text-gray-300">
-          DropVault is a secure, automated file-sharing platform designed to handle 
-          temporary data lifecycles with built-in garbage collection.
-        </p>
+        <div className="w-full space-y-8 text-slate-300 leading-relaxed">
+          <section>
+            <h2 className="text-2xl font-semibold text-white mb-3">The Platform</h2>
+            <p>
+              BinShare is a secure, automated file-sharing platform engineered to handle temporary data lifecycles with built-in garbage collection. Instead of relying on traditional file servers that leave vulnerable artifacts behind, uploads are converted directly into BSON BinData and stored securely within a temporary database cluster.
+            </p>
+          </section>
 
-        <div className="flex space-x-4">
-          <div className="flex">The Count is {count}</div>
-          <div>
-            <Button variant="contained" onClick={() => setCount(count + 1)}>
-              Increment
-            </Button>
-          </div>
-          <div>
-            <Button variant="contained" onClick={() => setCount(count - 1)}>
-              Decrement
-            </Button>
-          </div>
+          <section className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6 border-y border-slate-800">
+            <div className="flex flex-col items-center text-center">
+              <FaShieldAlt className="text-3xl text-emerald-500 mb-3" />
+              <h3 className="font-medium text-white mb-1">Zero Trust</h3>
+              <p className="text-sm text-slate-400">Files are encrypted before they ever leave your device.</p>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <FaFire className="text-3xl text-orange-500 mb-3" />
+              <h3 className="font-medium text-white mb-1">Burn After Reading</h3>
+              <p className="text-sm text-slate-400">Database records are permanently wiped the second a link is opened.</p>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <FaUserSecret className="text-3xl text-blue-500 mb-3" />
+              <h3 className="font-medium text-white mb-1">Total Privacy</h3>
+              <p className="text-sm text-slate-400">No logs, no tracking, and absolute anonymity for your transfers.</p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-white mb-3">Built for Security</h2>
+            <p>
+              Designed for developers and security-conscious teams, the architecture focuses heavily on secure network protocols and robust system design. By implementing strict data handling and automatic deletion, the platform ensures your information remains completely locked down from end to end.
+            </p>
+          </section>
         </div>
+
       </main>
     </div>
   );
 };
+
 export default About;

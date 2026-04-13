@@ -29,7 +29,19 @@ async function dbConnect() {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI as string, opts).then((mongoose) => {
+    cached.promise = mongoose.connect(MONGODB_URI as string, opts).then(async (mongoose) => {
+      try {
+        const db = mongoose.connection.db;
+        if (db) {
+          await db.collection('binshare.files').createIndex(
+            { "metadata.expiresAt": 1 }, // The field to watch
+            { expireAfterSeconds: 0 }    // Delete exactly at the timestamp
+          );
+          console.log("Database initialized: TTL Index ensured.");
+        }
+      } catch (err) {
+        console.error("Failed to ensure TTL index:", err);
+      }
       return mongoose;
     });
   }

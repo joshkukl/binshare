@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
     }, []);
     
     return (
-        <footer className="w-full py-4 border-b border-gray-200 flex items-center justify-center px-8">
+        <footer className="shrink-0 w-full h-16 py-4 border-b border-gray-200 flex items-center justify-center px-8">
             <p className="text-sm text-gray-500">&copy; 2026 Josh Kuklinski</p>
             {time && <p className="text-sm text-gray-500 ml-4">{time.toLocaleTimeString()}</p>}
         </footer>
