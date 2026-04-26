@@ -1,59 +1,153 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import { FaShieldAlt, FaFire, FaTerminal } from 'react-icons/fa';
+import { Box, Container, Typography, Button, Paper } from "@mui/material";
 
 const Home: React.FC = () => {
   return (
-    <div className="flex flex-col flex-1 w-full bg-black">
-      <main className="flex flex-col items-center justify-center w-full h-full p-8 text-slate-200">
-      
+    <Box sx={{ flex: 1, bgcolor: 'black' }}>
+      <Container
+        component="main"
+        maxWidth="lg"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+          p: { xs: 2, sm: 4 }, // p-8
+          color: 'text.secondary', // text-slate-200
+        }}
+      >
         {/* Hero Section */}
-        <section className="flex flex-col items-center text-center max-w-3xl mb-16 mt-12">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-white tracking-tight mb-6">
+        <Box
+          component="section"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            maxWidth: '48rem', // max-w-3xl
+            mb: 8, // mb-16
+            mt: 6, // mt-12
+          }}
+        >
+          <Typography
+            variant="h1"
+            sx={{
+              fontSize: { xs: '3rem', md: '3.75rem' }, // text-5xl md:text-6xl
+              fontWeight: 800, // font-extrabold
+              color: 'common.white',
+              letterSpacing: '-0.025em', // tracking-tight
+              mb: 3, // mb-6
+            }}
+          >
             Share sensitive data. <br />
-            <span className="text-emerald-500">Leave zero trace.</span>
-          </h1>
-          <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl">
+            <Box component="span" sx={{ color: 'primary.light' }}> {/* text-emerald-500 */}
+              Leave zero trace.
+            </Box>
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              fontSize: { xs: '1.125rem', md: '1.25rem' }, // text-lg md:text-xl
+              color: 'text.secondary', // text-slate-400
+              mb: 5, // mb-10
+              maxWidth: '42rem', // max-w-2xl
+            }}
+          >
             The secure, burn-after-reading file transfer utility built for developers. 
             Share API keys, environment variables, and sensitive documents that self-destruct the moment they are viewed.
-          </p>
+          </Typography>
 
           {/* Primary Call to Action (Routes to the Upload Tool) */}
-          <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-            <Link href="/upload" className="px-8 py-4 text-lg font-bold text-white bg-emerald-600 rounded-lg hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-900/50">
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, width: '100%', justifyContent: 'center' }}>
+            <Button
+              component={Link}
+              href="/upload"
+              variant="contained"
+              color="primary"
+              sx={{
+                px: 4, // px-8
+                py: 2, // py-4
+                fontSize: '1.125rem', // text-lg
+                boxShadow: '0 10px 15px -3px rgb(4 120 87 / 0.5), 0 4px 6px -4px rgb(4 120 87 / 0.5)', // shadow-lg shadow-emerald-900/50
+                '&:hover': {
+                  backgroundColor: 'primary.light', // hover:bg-emerald-500
+                },
+              }}
+            >
               Go to Upload Tool
-            </Link>
-            <Link href="/about" className="px-8 py-4 text-lg font-bold text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700 hover:text-white transition-colors">
+            </Button>
+            <Button
+              component={Link}
+              href="/about"
+              variant="contained"
+              sx={{
+                px: 4, // px-8
+                py: 2, // py-4
+                fontSize: '1.125rem', // text-lg
+                bgcolor: 'background.paper', // bg-slate-800
+                color: 'text.primary', // text-slate-300
+                '&:hover': {
+                  bgcolor: '#374151', // hover:bg-slate-700 (gray-700)
+                  color: 'common.white', // hover:text-white
+                },
+              }}
+            >
               How it Works
-            </Link>
-          </div>
-        </section>
+            </Button>
+          </Box>
+        </Box>
 
         {/* Feature Highlights (3-Column Grid) */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl w-full mt-8 border-t border-slate-800 pt-16">
-        
-          <div className="flex flex-col items-center text-center p-6 bg-slate-900 rounded-xl border border-slate-800">
-            <FaShieldAlt className="text-4xl text-emerald-500 mb-4" />
-            <h3 className="text-xl font-bold text-white mb-2">End-to-End Secure</h3>
-            <p className="text-slate-400 text-sm">Files are converted to BinData and encrypted in transit to ensure total privacy.</p>
-          </div>
+        <Box
+          component="section"
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+            gap: 4, // gap-8 -> theme.spacing(4) is 32px
+            maxWidth: '64rem', // max-w-5xl
+            width: '100%',
+            mt: 4, // mt-8
+            borderTop: 1,
+            borderColor: 'background.paper', // border-slate-800
+            pt: 8, // pt-16
+          }}
+        >
+          <Paper elevation={0} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', p: 3, bgcolor: 'background.default', borderRadius: '12px', border: 1, borderColor: 'background.paper' }}>
+            <FaShieldAlt style={{ fontSize: '2.25rem', color: '#10b981', marginBottom: '1rem' }} />
+            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'common.white', mb: 1 }}>
+              End-to-End Secure
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              Files are converted to BinData and encrypted in transit to ensure total privacy.
+            </Typography>
+          </Paper>
 
-          <div className="flex flex-col items-center text-center p-6 bg-slate-900 rounded-xl border border-slate-800">
-            <FaFire className="text-4xl text-orange-500 mb-4" />
-            <h3 className="text-xl font-bold text-white mb-2">Burn After Reading</h3>
-            <p className="text-slate-400 text-sm">Links are strictly one-time-use. The database record is permanently wiped the second it is opened.</p>
-          </div>
+          <Paper elevation={0} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', p: 3, bgcolor: 'background.default', borderRadius: '12px', border: 1, borderColor: 'background.paper' }}>
+            <FaFire style={{ fontSize: '2.25rem', color: '#f97316', marginBottom: '1rem' }} />
+            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'common.white', mb: 1 }}>
+              Burn After Reading
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              Links are strictly one-time-use. The database record is permanently wiped the second it is opened.
+            </Typography>
+          </Paper>
 
-          <div className="flex flex-col items-center text-center p-6 bg-slate-900 rounded-xl border border-slate-800">
-            <FaTerminal className="text-4xl text-sky-500 mb-4" />
-            <h3 className="text-xl font-bold text-white mb-2">Developer First</h3>
-            <p className="text-slate-400 text-sm">Optimized for sharing config files, passwords, and tokens without leaving a digital footprint.</p>
-          </div>
-
-        </section>
-
-      </main>
-    </div>
+          <Paper elevation={0} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', p: 3, bgcolor: 'background.default', borderRadius: '12px', border: 1, borderColor: 'background.paper' }}>
+            <FaTerminal style={{ fontSize: '2.25rem', color: '#0ea5e9', marginBottom: '1rem' }} />
+            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'common.white', mb: 1 }}>
+              Developer First
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              Optimized for sharing config files, passwords, and tokens without leaving a digital footprint.
+            </Typography>
+          </Paper>
+        </Box>
+      </Container>
+    </Box>
   );
 }
 

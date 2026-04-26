@@ -3,6 +3,7 @@ import React, { useState } from "react"; // 1. Added useState
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // 2. Added Next.js router to redirect after success
 import { FaArchive } from "react-icons/fa";
+import { Box, Container, Paper, Typography, OutlinedInput, Button, Link as MuiLink, CircularProgress } from "@mui/material";
 
 const Register: React.FC = () => {
   // 3. Set up state to hold the form data and errors
@@ -45,67 +46,129 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col flex-1 w-full bg-black">
-      <main className="flex flex-col items-center justify-center w-full max-w-md mx-auto h-full p-8 text-slate-200">
-        
-        <div className="w-full bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl">
-          <div className="flex flex-col items-center mb-8">
+    <Box sx={{ flex: 1, bgcolor: 'black' }}>
+      <Container
+        component="main"
+        maxWidth="xs"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+          p: { xs: 2, sm: 4 },
+        }}
+      >
+        <Paper
+          elevation={24}
+          sx={{
+            width: '100%',
+            bgcolor: 'background.default',
+            border: 1,
+            borderColor: 'background.paper',
+            p: 4,
+            borderRadius: '1rem',
+          }}
+        >
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
             <FaArchive className="text-4xl text-emerald-500 mb-4" />
-            <h1 className="text-2xl font-bold text-white">Create an account</h1>
-            <p className="text-slate-400 text-sm mt-1">Start sharing files securely today</p>
-          </div>
+            <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold', color: 'common.white' }}>
+              Create an account
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
+              Start sharing files securely today
+            </Typography>
+          </Box>
 
           {/* 5. Hook up the form to our new function */}
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            
+          <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }} onSubmit={handleSubmit}>
             {/* Added a red error message box that only shows if something goes wrong */}
             {error && (
-              <div className="bg-red-500/10 border border-red-500/50 text-red-500 text-sm p-3 rounded-lg text-center">
-                {error}
-              </div>
+              <Paper
+                variant="outlined"
+                sx={{
+                  borderColor: 'rgba(239, 68, 68, 0.5)',
+                  bgcolor: 'rgba(239, 68, 68, 0.1)',
+                  color: '#ef4444',
+                  p: 1.5,
+                  borderRadius: '0.5rem',
+                  textAlign: 'center',
+                  fontSize: '0.875rem',
+                }}
+              >
+                <Typography variant="body2">{error}</Typography>
+              </Paper>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Email Address</label>
-              <input 
-                type="email" 
+              <Typography component="label" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', mb: 0.5 }}>
+                Email Address
+              </Typography>
+              <OutlinedInput
+                type="email"
                 required
+                fullWidth
                 value={email} // Bind to state
                 onChange={(e) => setEmail(e.target.value)} // Update state on type
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-slate-200 focus:outline-none focus:border-emerald-500 transition-colors"
                 placeholder="you@example.com"
+                sx={{
+                  backgroundColor: '#020617',
+                  '& .MuiOutlinedInput-notchedOutline': { borderColor: 'background.paper' },
+                  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'background.paper' },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.light' },
+                  '& .MuiInputBase-input': { color: 'text.primary', py: 1.5, px: 2 },
+                }}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1">Password</label>
-              <input 
-                type="password" 
+              <Typography component="label" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'text.secondary', mb: 0.5 }}>
+                Password
+              </Typography>
+              <OutlinedInput
+                type="password"
                 required
-                minLength={6}
+                fullWidth
+                inputProps={{ minLength: 6 }}
                 value={password} // Bind to state
                 onChange={(e) => setPassword(e.target.value)} // Update state on type
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-slate-200 focus:outline-none focus:border-emerald-500 transition-colors"
                 placeholder="Create a strong password"
+                sx={{
+                  backgroundColor: '#020617',
+                  '& .MuiOutlinedInput-notchedOutline': { borderColor: 'background.paper' },
+                  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'background.paper' },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'primary.light' },
+                  '& .MuiInputBase-input': { color: 'text.primary', py: 1.5, px: 2 },
+                }}
               />
             </div>
 
             {/* Change button text when loading */}
-            <button 
+            <Button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 mt-4 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold rounded-lg transition-colors shadow-lg shadow-emerald-900/20"
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{
+                py: 1.5,
+                mt: 2,
+                boxShadow: '0 10px 15px -3px rgb(4 120 87 / 0.2), 0 4px 6px -4px rgb(4 120 87 / 0.2)',
+                '&:hover': { backgroundColor: 'primary.light' },
+              }}
             >
-              {isLoading ? "Creating Account..." : "Sign Up"}
-            </button>
-          </form>
+              {isLoading ? <CircularProgress size={24} color="inherit" /> : "Sign Up"}
+            </Button>
+          </Box>
 
-          <p className="text-center text-sm text-slate-500 mt-6">
-            Already have an account? <Link href="/login" className="text-emerald-500 hover:text-emerald-400 font-medium">Sign in</Link>
-          </p>
-        </div>
-
-      </main>
-    </div>
+          <Typography variant="body2" align="center" sx={{ color: 'text.disabled', mt: 3 }}>
+            Already have an account?{' '}
+            <MuiLink component={Link} href="/login" sx={{ color: 'primary.light', '&:hover': { color: '#34d399' }, fontWeight: 500 }}>
+              Sign in
+            </MuiLink>
+          </Typography>
+        </Paper>
+      </Container>
+    </Box>
   );
 };
 

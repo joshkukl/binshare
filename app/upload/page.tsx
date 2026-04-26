@@ -2,8 +2,9 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { FaCloudUploadAlt, FaLock, FaFire, FaClock, FaCog, FaCopy, FaCheck } from "react-icons/fa";
-import { useSession } from "next-auth/react"; // 1. ADDED THIS IMPORT
-
+import { useSession } from "next-auth/react";
+import { Box, Container, Typography, Button, Paper, RadioGroup, FormControlLabel, Radio, Checkbox, Divider, Modal, Backdrop, Fade, OutlinedInput, CircularProgress, Link as MuiLink } from "@mui/material";
+ 
 const Upload: React.FC = () => {
   const { data: session } = useSession(); // 2. Grab login status
   const [saveToVault, setSaveToVault] = useState(false); // 3. Track the user's choice
@@ -14,7 +15,7 @@ const Upload: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null); 
   const [copied, setCopied] = useState(false);
-  
+
   const processFile = async (file: File) => {
     setDownloadUrl(null); // ADD THIS: Clears any old link before starting
     setIsUploading(true);
@@ -57,175 +58,215 @@ const Upload: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col flex-1 w-full bg-black">
-      <main className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto h-full p-8 text-slate-200">
-        
-        <div className="w-full text-center mb-8">
-          <h1 className="text-4xl font-bold mb-3">Secure Drop Zone</h1>
-          <p className="text-slate-400">Files are encrypted locally before transmission.</p>
-        </div>
+    <Box sx={{ flex: 1, bgcolor: 'black' }}>
+      <Container component="main" maxWidth="md" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', p: { xs: 2, sm: 4 } }}>
+
+        <Box sx={{ width: '100%', textAlign: 'center', mb: 4 }}>
+          <Typography variant="h3" component="h1" sx={{ fontWeight: 'bold', mb: 1 }}>Secure Drop Zone</Typography>
+          <Typography sx={{ color: 'text.secondary' }}>Files are encrypted locally before transmission.</Typography>
+        </Box>
 
         {/* Drag & Drop Area */}
-        <div 
-          className={`w-full h-64 flex flex-col items-center justify-center border-2 border-dashed rounded-xl transition-all duration-200 ${
-            isDragging ? "border-emerald-500 bg-emerald-500/10" : "border-slate-700 bg-slate-900 hover:border-slate-500 hover:bg-slate-800"
-          }`}
+        <Box
+          sx={{
+            width: '100%',
+            height: '16rem',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '2px dashed',
+            borderRadius: '0.75rem',
+            transition: 'all 200ms',
+            borderColor: isDragging ? 'primary.light' : '#334155', // slate-700
+            bgcolor: isDragging ? 'rgba(16, 185, 129, 0.1)' : '#0f172a', // slate-900
+            '&:hover': {
+              borderColor: isDragging ? 'primary.light' : '#64748b', // slate-500
+              bgcolor: isDragging ? 'rgba(16, 185, 129, 0.1)' : '#1e293b', // slate-800
+            },
+          }}
           onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
         >
-          <FaCloudUploadAlt className={`text-6xl mb-4 ${isDragging ? "text-emerald-500" : "text-slate-500"}`} />
-          <p className="text-lg font-medium mb-1">Drag and drop your files here</p>
-          <p className="text-sm text-slate-500 mb-4">or click to browse from your computer</p>
-          
-          <input 
-            type="file" 
-            className="hidden" 
-            ref={fileInputRef} 
-            onChange={handleFileChange} 
+          <FaCloudUploadAlt style={{ fontSize: '3.75rem', marginBottom: '1rem', color: isDragging ? '#10b981' : '#64748b' }} />
+          <Typography sx={{ fontSize: '1.125rem', fontWeight: 500, mb: 0.5 }}>Drag and drop your files here</Typography>
+          <Typography variant="body2" sx={{ color: 'text.disabled', mb: 2 }}>or click to browse from your computer</Typography>
+
+          <input
+            type="file"
+            hidden
+            ref={fileInputRef}
+            onChange={handleFileChange}
           />
-          
-          <button 
+
+          <Button
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="px-6 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 text-white font-semibold rounded-lg transition-colors"
+            variant="contained"
+            sx={{
+              bgcolor: '#334155', // slate-700
+              '&:hover': { bgcolor: '#475569' }, // slate-600
+            }}
           >
-            {isUploading ? "Uploading..." : "Select Files"}
-          </button>
-        </div>
+            {isUploading ? <CircularProgress size={24} color="inherit" /> : "Select Files"}
+          </Button>
+        </Box>
 
         {/* 5. REPLACED THIS ENTIRE SECTION */}
-        <div className="w-full mt-8 p-6 bg-slate-900 border border-slate-800 rounded-xl">
-          <h3 className="flex items-center gap-2 text-lg font-bold text-white mb-4">
+        <Paper
+          elevation={0}
+          sx={{
+            width: '100%',
+            mt: 4,
+            p: 3,
+            bgcolor: '#0f172a', // slate-900
+            border: 1,
+            borderColor: 'background.paper', // slate-800
+            borderRadius: '0.75rem',
+          }}
+        >
+          <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 'bold', color: 'common.white', mb: 2 }}>
             <FaCog className="text-slate-400" /> Storage Options
-          </h3>
-          <div className="flex flex-col gap-4">
-            
-            {/* Option A: Temporary Drop */}
-            <label className="flex items-center gap-3 cursor-pointer group">
-              <input 
-                type="radio" 
-                name="storage"
-                checked={!saveToVault}
-                onChange={() => setSaveToVault(false)}
-                className="w-5 h-5 accent-emerald-500 cursor-pointer" 
-              />
-              <div className="flex flex-col">
-                <span className="font-medium text-slate-200 group-hover:text-white transition-colors flex items-center gap-2">
-                  <FaClock className="text-blue-500" /> Temporary Drop
-                </span>
-                <span className="text-sm text-slate-500">File is securely deleted automatically after 24 hours.</span>
-              </div>
-            </label>
+          </Typography>
+          <RadioGroup value={String(saveToVault)} onChange={(e) => setSaveToVault(e.target.value === 'true')}>
+            <FormControlLabel
+              value="false"
+              control={<Radio sx={{ '&, &.Mui-checked': { color: 'primary.light' } }} />}
+              label={
+                <Box>
+                  <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 500 }}><FaClock style={{ color: '#3b82f6' }} /> Temporary Drop</Typography>
+                  <Typography variant="body2" color="text.secondary">File is securely deleted automatically after 24 hours.</Typography>
+                </Box>
+              }
+              sx={{ mb: 1 }}
+            />
+            <FormControlLabel
+              value="true"
+              disabled={!session}
+              control={<Radio sx={{ '&, &.Mui-checked': { color: 'primary.light' } }} />}
+              label={
+                <Box>
+                  <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 500 }}><FaLock style={{ color: '#10b981' }} /> Save to Personal Vault</Typography>
+                  <Typography variant="body2" color="text.secondary">{session ? "File lives forever in your account until you delete it." : "Log in to save files permanently."}</Typography>
+                </Box>
+              }
+            />
+          </RadioGroup>
 
-            {/* Option B: Save to Vault */}
-            <label className={`flex items-center gap-3 ${session ? 'cursor-pointer group' : 'opacity-50 cursor-not-allowed'}`}>
-              <input 
-                type="radio" 
-                name="storage"
-                disabled={!session}
-                checked={saveToVault}
-                onChange={() => setSaveToVault(true)}
-                className="w-5 h-5 accent-emerald-500 cursor-pointer disabled:cursor-not-allowed" 
-              />
-              <div className="flex flex-col">
-                <span className="font-medium text-slate-200 group-hover:text-white transition-colors flex items-center gap-2">
-                  <FaLock className="text-emerald-500" /> Save to Personal Vault
-                </span>
-                <span className="text-sm text-slate-500">
-                  {session ? "File lives forever in your account until you delete it." : "Log in to save files permanently."}
-                </span>
-              </div>
-            </label>
+          <Divider sx={{ my: 2, borderColor: 'background.paper' }} />
 
-            <hr className="border-slate-800 my-2" />
-
-            {/* Option C: Burn Modifier */}
-            <label className={`flex items-center gap-3 ${saveToVault ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer group'}`}>
-              <input 
-                type="checkbox" 
-                disabled={saveToVault}
-                checked={burnAfterReading}
-                onChange={(e) => setBurnAfterReading(e.target.checked)}
-                className="w-5 h-5 accent-emerald-500 cursor-pointer disabled:cursor-not-allowed" 
-              />
-              <div className="flex flex-col">
-                <span className={`font-medium transition-colors flex items-center gap-2 ${saveToVault ? 'text-slate-500' : 'text-slate-200 group-hover:text-white'}`}>
-                  <FaFire className={saveToVault ? "text-slate-600" : "text-orange-500"} /> Burn after reading
-                </span>
-                <span className="text-sm text-slate-500">File is permanently deleted once the link is opened.</span>
-              </div>
-            </label>
-          </div>
-        </div>
+          <FormControlLabel
+            disabled={saveToVault}
+            control={<Checkbox checked={burnAfterReading} onChange={(e) => setBurnAfterReading(e.target.checked)} sx={{ '&, &.Mui-checked': { color: 'primary.light' } }} />}
+            label={
+              <Box>
+                <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 500, color: saveToVault ? 'text.disabled' : 'text.primary' }}>
+                  <FaFire style={{ color: saveToVault ? '#4b5563' : '#f97316' }} /> Burn after reading
+                </Typography>
+                <Typography variant="body2" color="text.secondary">File is permanently deleted once the link is opened.</Typography>
+              </Box>
+            }
+          />
+        </Paper>
 
         {/* Success Popup Modal (UNCHANGED) */}
         {/* Success Popup Modal */}
-        {downloadUrl && (
-          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-            <div className="bg-slate-900 border border-emerald-500/50 p-8 rounded-xl max-w-lg w-full shadow-2xl text-center">
-              <div className="mb-4 flex justify-center">
+        <Modal
+          open={!!downloadUrl}
+          onClose={() => {
+            setDownloadUrl(null);
+            if (fileInputRef.current) fileInputRef.current.value = "";
+          }}
+          closeAfterTransition
+          slots={{ backdrop: Backdrop }}
+          slotProps={{ backdrop: { timeout: 500, sx: { backdropFilter: 'blur(3px)', backgroundColor: 'rgba(0,0,0,0.8)' } } }}
+          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2 }}
+        >
+          <Fade in={!!downloadUrl}>
+            <Paper
+              elevation={24}
+              sx={{
+                bgcolor: 'background.default',
+                border: 1,
+                borderColor: 'rgba(16, 185, 129, 0.5)',
+                p: 4,
+                borderRadius: '0.75rem',
+                maxWidth: '32rem',
+                width: '100%',
+                textAlign: 'center',
+              }}
+            >
+              <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
                 {saveToVault ? (
-                  <FaLock className="text-5xl text-emerald-500" />
+                  <FaLock style={{ fontSize: '3rem', color: '#10b981' }} />
                 ) : (
-                  <FaCheck className="text-5xl text-emerald-500" />
+                  <FaCheck style={{ fontSize: '3rem', color: '#10b981' }} />
                 )}
-              </div>
+              </Box>
 
-              <h2 className="text-2xl font-bold text-white mb-2">
+              <Typography variant="h5" component="h2" sx={{ fontWeight: 'bold', color: 'common.white', mb: 1 }}>
                 {saveToVault ? "Securely Vaulted!" : "Upload Complete!"}
-              </h2>
+              </Typography>
 
               {saveToVault ? (
-                <div className="mb-6">
-                  <p className="text-slate-400 mb-6 text-sm">
+                <Box sx={{ mb: 3 }}>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
                     This file is now stored permanently in your vault. You can manage it or share the link from your Vault dashboard.
-                  </p>
-                  <Link href="/vault">
-                    <button className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg transition-colors mb-4">
-                      Go to My Vault
-                    </button>
-                  </Link>
-                </div>
+                  </Typography>
+                  <Button component={Link} href="/vault" variant="contained" color="primary" fullWidth sx={{ py: 1.5, mb: 2 }}>
+                    Go to My Vault
+                  </Button>
+                </Box>
               ) : (
                 <>
-                  <p className="text-slate-400 mb-6">Your secure download link is ready.</p>
-                  <div className="flex items-center gap-2 bg-black border border-slate-700 p-2 rounded-lg mb-6">
-                    <input
+                  <Typography sx={{ color: 'text.secondary', mb: 3 }}>Your secure download link is ready.</Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, bgcolor: 'black', border: 1, borderColor: '#334155', p: 1, borderRadius: '0.5rem', mb: 3 }}>
+                    <OutlinedInput
                       type="text"
                       readOnly
-                      value={downloadUrl}
-                      className="bg-transparent text-slate-300 w-full outline-none px-2 font-mono text-sm"
+                      value={downloadUrl || ''}
+                      fullWidth
+                      sx={{
+                        bgcolor: 'transparent',
+                        fontFamily: 'monospace',
+                        fontSize: '0.875rem',
+                        color: 'text.primary',
+                        '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                      }}
                     />
-                    <button
+                    <Button
                       onClick={() => {
-                        navigator.clipboard.writeText(downloadUrl);
+                        if (downloadUrl) navigator.clipboard.writeText(downloadUrl);
                         setCopied(true);
                         setTimeout(() => setCopied(false), 2000);
                       }}
-                      className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-md font-semibold transition flex items-center gap-2 whitespace-nowrap"
+                      variant="contained"
+                      color="primary"
+                      startIcon={copied ? <FaCheck /> : <FaCopy />}
+                      sx={{ flexShrink: 0 }}
                     >
-                      {copied ? <FaCheck /> : <FaCopy />}
                       {copied ? "Copied!" : "Copy"}
-                    </button>
-                  </div>
+                    </Button>
+                  </Box>
                 </>
               )}
 
-              <button
+              <MuiLink
+                component="button"
                 onClick={() => {
                   setDownloadUrl(null);
                   if (fileInputRef.current) fileInputRef.current.value = "";
                 }}
-                className="text-slate-500 hover:text-slate-300 transition text-sm underline"
+                sx={{ color: 'text.disabled', '&:hover': { color: 'text.secondary' }, textDecoration: 'underline', fontSize: '0.875rem' }}
               >
                 Close and upload another file
-              </button>
-            </div>
-          </div>
-        )}    
-      </main>
-    </div>
+              </MuiLink>
+            </Paper>
+          </Fade>
+        </Modal>
+      </Container>
+    </Box>
   );
 };
 

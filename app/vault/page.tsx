@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaFolderOpen, FaTrashAlt, FaExternalLinkAlt, FaFileAlt, FaLock } from "react-icons/fa";
-import { Button } from "@mui/material";
+import { Box, Container, Typography, Button, Paper, CircularProgress, Link as MuiLink } from "@mui/material";
 import { LuVault } from "react-icons/lu";
-import { useSession } from "next-auth/react"; // ADDED NEXTAUTH HOOK
+import { useSession } from "next-auth/react";
 
 const Vault: React.FC = () => {
   const { data: session, status } = useSession(); // GRAB SESSION STATUS
@@ -56,101 +56,162 @@ const Vault: React.FC = () => {
   // --- UI STATE 1: LOGGED OUT (ACCESS DENIED) ---
   if (status === "unauthenticated") {
     return (
-      <div className="flex flex-col flex-1 w-full bg-black">
-        <main className="flex flex-col items-center justify-center w-full max-w-5xl mx-auto h-full p-8 pt-24 text-slate-200">
-          <FaLock className="text-6xl text-emerald-500 mb-6" />
-          <h1 className="text-3xl font-bold text-white mb-4">Access Denied</h1>
-          <p className="text-slate-400 mb-8">You must be logged in to view your Personal Vault.</p>
-          <Link href="/login">
-            <Button variant="contained" className="bg-emerald-600 hover:bg-emerald-500 font-bold normal-case">
-              Log In to Continue
-            </Button>
-          </Link>
-        </main>
-      </div>
+      <Box sx={{ flex: 1, bgcolor: 'black', display: 'flex', flexDirection: 'column' }}>
+        <Container
+          component="main"
+          maxWidth="lg"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flex: 1,
+            p: 4,
+            pt: 12,
+            color: 'text.secondary'
+          }}
+        >
+          <FaLock style={{ fontSize: '3.75rem', color: '#10b981', marginBottom: '1.5rem' }} />
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'common.white', mb: 2 }}>
+            Access Denied
+          </Typography>
+          <Typography sx={{ color: 'text.secondary', mb: 4 }}>
+            You must be logged in to view your Personal Vault.
+          </Typography>
+          <Button component={Link} href="/login" variant="contained" color="primary">
+            Log In to Continue
+          </Button>
+        </Container>
+      </Box>
     );
   }
 
   // --- UI STATE 2: LOADING ---
   if (loading || status === "loading") {
     return (
-      <div className="flex flex-col flex-1 w-full bg-black items-center justify-center text-slate-400">
-        <p className="animate-pulse">Accessing Vault Chunks...</p>
-      </div>
+      <Box sx={{ flex: 1, bgcolor: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'text.secondary' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <CircularProgress color="primary" size={20} />
+          <Typography>Accessing Vault Chunks...</Typography>
+        </Box>
+      </Box>
     );
   }
 
   // --- UI STATE 3: LOGGED IN (SHOW VAULT) ---
   return (
-    <div className="flex flex-col flex-1 w-full bg-black">
-      <main className="flex flex-col items-start justify-start w-full max-w-5xl mx-auto h-full p-8 pt-12 text-slate-200">
-        
-        <div className="w-full flex justify-between items-center mb-12">
-          <div className="flex items-center gap-4">
-            <LuVault className="text-4xl text-emerald-500" />
-            <div>
-              <h1 className="text-3xl font-bold text-white">My Vault</h1>
-              <p className="text-slate-400 text-sm">Manage your active links and encrypted files.</p>
-            </div>
-          </div>
-          <Link href="/upload">
-            <Button variant="contained" className="bg-emerald-600 hover:bg-emerald-500 font-bold normal-case">
-              + New Upload
-            </Button>
-          </Link>
-        </div>
+    <Box sx={{ flex: 1, bgcolor: 'black' }}>
+      <Container component="main" maxWidth="lg" sx={{ p: { xs: 2, sm: 4 }, pt: 6, color: 'text.secondary' }}>
+
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 6 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <LuVault style={{ fontSize: '2.25rem', color: '#10b981' }} />
+            <Box>
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'common.white' }}>My Vault</Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>Manage your active links and encrypted files.</Typography>
+            </Box>
+          </Box>
+          <Button component={Link} href="/upload" variant="contained" color="primary">
+            + New Upload
+          </Button>
+        </Box>
 
         {files.length === 0 ? (
-          <div className="w-full flex flex-col items-center justify-center py-20 px-4 bg-slate-900/50 border border-dashed border-slate-800 rounded-2xl text-center">
-            <FaFolderOpen className="text-6xl text-slate-800 mb-4" />
-            <h2 className="text-xl font-bold text-slate-300 mb-2">Your vault is empty</h2>
-            <p className="text-slate-500 max-w-md mb-6 text-sm">
+          <Paper
+            variant="outlined"
+            sx={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              py: 10,
+              px: 2,
+              bgcolor: 'rgba(15, 23, 42, 0.5)', // slate-900/50
+              borderStyle: 'dashed',
+              borderColor: 'background.paper', // slate-800
+              borderRadius: '1rem',
+              textAlign: 'center'
+            }}
+          >
+            <FaFolderOpen style={{ fontSize: '3.75rem', color: '#1e293b', marginBottom: '1rem' }} />
+            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary', mb: 1 }}>Your vault is empty</Typography>
+            <Typography sx={{ color: 'text.disabled', maxWidth: '42rem', mb: 3, fontSize: '0.875rem' }}>
               You haven't uploaded any permanent files yet.
-            </p>
-            <Link href="/upload">
-              <button className="px-6 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-lg transition-colors">
-                Go to Drop Zone
-              </button>
-            </Link>
-          </div>
+            </Typography>
+            <Button component={Link} href="/upload" variant="contained" sx={{ bgcolor: 'background.paper', '&:hover': { bgcolor: '#334155' } }}>
+              Go to Drop Zone
+            </Button>
+          </Paper>
         ) : (
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Box sx={{
+            width: '100%',
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+            gap: 2
+          }}>
             {files.map((file) => (
-              <div key={file._id} className="bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col justify-between hover:border-slate-700 transition-all">
-                <div className="mb-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <FaFileAlt className="text-emerald-500/50 text-xl" />
-                    <h3 className="font-mono text-sm font-bold truncate text-slate-200 w-full" title={file.filename}>
+              <Paper
+                key={file._id}
+                elevation={0}
+                sx={{
+                  bgcolor: 'background.default',
+                  border: 1,
+                  borderColor: 'background.paper',
+                  p: 2.5,
+                  borderRadius: '0.75rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  transition: 'border-color 0.3s',
+                  '&:hover': { borderColor: '#334155' }
+                }}
+              >
+                <Box sx={{ mb: 3 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                    <FaFileAlt style={{ color: 'rgba(16, 185, 129, 0.5)', fontSize: '1.25rem' }} />
+                    <Typography sx={{ fontFamily: 'monospace', fontSize: '0.875rem', fontWeight: 'bold', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'text.primary' }} title={file.filename}>
                       {file.filename}
-                    </h3>
-                  </div>
-                  <div className="text-xs text-slate-500 space-y-1">
-                    <p>Size: {(file.length / (1024 * 1024)).toFixed(2)} MB</p>
-                    <p>Stored: {new Date(file.uploadDate).toLocaleDateString()}</p>
-                  </div>
-                </div>
+                    </Typography>
+                  </Box>
+                  <Box sx={{ fontSize: '0.75rem', color: 'text.disabled', display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                    <Typography variant="caption">Size: {(file.length / (1024 * 1024)).toFixed(2)} MB</Typography>
+                    <Typography variant="caption">Stored: {new Date(file.uploadDate).toLocaleDateString()}</Typography>
+                  </Box>
+                </Box>
 
-                <div className="flex gap-2">
-                  <Link 
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    component={MuiLink}
                     href={`/download/${file.metadata.token}`}
                     target="_blank"
-                    className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded flex items-center justify-center gap-2 transition"
+                    variant="contained"
+                    startIcon={<FaExternalLinkAlt size={10} />}
+                    sx={{ flex: 1, py: 1, bgcolor: 'background.paper', '&:hover': { bgcolor: '#334155' }, fontSize: '0.75rem' }}
                   >
-                    <FaExternalLinkAlt size={10} /> View Link
-                  </Link>
-                  <button 
+                    Download
+                  </Button>
+                  <Button
                     onClick={() => handleDelete(file._id)}
-                    className="px-3 py-2 bg-red-900/20 hover:bg-red-900/40 text-red-500 rounded transition border border-red-900/30"
+                    sx={{
+                      minWidth: 'auto',
+                      px: 1.5,
+                      bgcolor: 'rgba(127, 29, 29, 0.2)',
+                      color: '#ef4444',
+                      border: 1,
+                      borderColor: 'rgba(127, 29, 29, 0.3)',
+                      '&:hover': { bgcolor: 'rgba(127, 29, 29, 0.4)' }
+                    }}
                   >
                     <FaTrashAlt size={12} />
-                  </button>
-                </div>
-              </div>
+                  </Button>
+                </Box>
+              </Paper>
             ))}
-          </div>
+          </Box>
         )}
-      </main>
-    </div>
+      </Container>
+    </Box>
   );
 };
 
