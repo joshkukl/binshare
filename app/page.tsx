@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { FaShieldAlt, FaFire, FaTerminal } from 'react-icons/fa';
+import { FaShieldAlt, FaFire, FaLock } from 'react-icons/fa';
 import { Box, Container, Typography, Button, Paper } from "@mui/material";
 
 const Home: React.FC = () => {
@@ -137,12 +137,12 @@ const Home: React.FC = () => {
           </Paper>
 
           <Paper elevation={0} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', p: 3, bgcolor: 'background.default', borderRadius: '12px', border: 1, borderColor: 'background.paper' }}>
-            <FaTerminal style={{ fontSize: '2.25rem', color: '#0ea5e9', marginBottom: '1rem' }} />
+            <FaLock style={{ fontSize: '2.25rem', color: '#0ea5e9', marginBottom: '1rem' }} />
             <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'common.white', mb: 1 }}>
-              Developer First
+              Persistent Vault
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Optimized for sharing config files, passwords, and tokens without leaving a digital footprint.
+              Authenticated users gain access to a private dashboard to manage active links, track expirations, and store files permanently until explicitly deleted.
             </Typography>
           </Paper>
         </Box>
