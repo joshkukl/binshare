@@ -98,12 +98,21 @@ const Vault: React.FC = () => {
     );
   }
 
-  // --- UI STATE 3: LOGGED IN (SHOW VAULT) ---
+// --- UI STATE 3: LOGGED IN (SHOW VAULT) ---
   return (
     <Box sx={{ flex: 1, bgcolor: 'black' }}>
       <Container component="main" maxWidth="lg" sx={{ p: { xs: 2, sm: 4 }, pt: 6, color: 'text.secondary' }}>
 
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 6 }}>
+        {/* 1. FIXED HEADER LOGIC: Stacks on mobile, row on desktop */}
+        <Box sx={{ 
+          width: '100%', 
+          display: 'flex', 
+          flexDirection: { xs: 'column', sm: 'row' }, 
+          justifyContent: 'space-between', 
+          alignItems: { xs: 'flex-start', sm: 'center' }, 
+          gap: { xs: 3, sm: 0 }, 
+          mb: 6 
+        }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <LuVault style={{ fontSize: '2.25rem', color: '#10b981' }} />
             <Box>
@@ -127,9 +136,9 @@ const Vault: React.FC = () => {
               justifyContent: 'center',
               py: 10,
               px: 2,
-              bgcolor: 'rgba(15, 23, 42, 0.5)', // slate-900/50
+              bgcolor: 'rgba(15, 23, 42, 0.5)',
               borderStyle: 'dashed',
-              borderColor: 'background.paper', // slate-800
+              borderColor: 'background.paper',
               borderRadius: '1rem',
               textAlign: 'center'
             }}
@@ -147,7 +156,11 @@ const Vault: React.FC = () => {
           <Box sx={{
             width: '100%',
             display: 'grid',
-            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+            gridTemplateColumns: { 
+              xs: 'minmax(0, 1fr)', 
+              md: 'repeat(2, minmax(0, 1fr))', 
+              lg: 'repeat(3, minmax(0, 1fr))' 
+            },
             gap: 2
           }}>
             {files.map((file) => (
@@ -167,10 +180,21 @@ const Vault: React.FC = () => {
                   '&:hover': { borderColor: '#334155' }
                 }}
               >
-                <Box sx={{ mb: 3 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-                    <FaFileAlt style={{ color: 'rgba(16, 185, 129, 0.5)', fontSize: '1.25rem' }} />
-                    <Typography sx={{ fontFamily: 'monospace', fontSize: '0.875rem', fontWeight: 'bold', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'text.primary' }} title={file.filename}>
+                {/* 2. FIXED FILE TRUNCATION LOGIC: Added overflow hidden and minWidth 0 */}
+                <Box sx={{ mb: 3, overflow: 'hidden' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1, width: '100%' }}>
+                    <FaFileAlt style={{ color: 'rgba(16, 185, 129, 0.5)', fontSize: '1.25rem', flexShrink: 0 }} />
+                    <Typography sx={{ 
+                      flex: 1, 
+                      minWidth: 0, 
+                      fontFamily: 'monospace', 
+                      fontSize: '0.875rem', 
+                      fontWeight: 'bold', 
+                      overflow: 'hidden', 
+                      textOverflow: 'ellipsis', 
+                      whiteSpace: 'nowrap', 
+                      color: 'text.primary' 
+                    }} title={file.filename}>
                       {file.filename}
                     </Typography>
                   </Box>

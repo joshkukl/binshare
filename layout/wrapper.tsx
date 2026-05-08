@@ -1,28 +1,69 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { ThemeProvider } from '@mui/material/styles';
+import { Box, Drawer } from '@mui/material';
 import theme from "./theme";
-/**
- * A Primary Wrapper for Pages within the App.
- *
- * @param {string} props.children - The text to display inside the button.
- * This component serves as a primary wrapper for pages within the application, providing a consistent layout and styling for its child components. It utilizes the ThemeProvider from Material-UI to apply a custom theme across all child components, ensuring a cohesive look and feel throughout the application. The wrapper is designed to be flexible and can accommodate various types of content, making it suitable for use on different pages of the app.
- * @returns {JSX.Element} The rendered PageWrapper component with the applied theme and layout.
- * @example
- * <PageWrapper>
- *   <h1>Welcome to the Task App</h1>
- *   <p>This is the main page of the application.</p>
- * </PageWrapper> 
- */
+import Header from "./header";
+import Aside from "./aside";
+import Footer from "./footer"; 
+import { SessionProvider } from "next-auth/react";
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
+
 const PageWrapper: React.FC<RootLayoutProps> = ({ children }) => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   return (
-    <ThemeProvider theme={theme}>
-      {children}
-    </ThemeProvider>
+    <SessionProvider>
+      <ThemeProvider theme={theme}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+          <Header onMenuClick={handleDrawerToggle} />
+          
+          <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>
+            
+            {/* 1. MOBILE SIDEBAR (The Drawer) */}
+            <Drawer
+              variant="temporary"
+              open={mobileOpen}
+              onClose={handleDrawerToggle}
+              ModalProps={{ keepMounted: true }} 
+              sx={{
+                display: { xs: 'block', md: 'none' },
+                '& .MuiDrawer-paper': { width: 256, boxSizing: 'border-box', backgroundColor: '#0f172a', borderRight: '1px solid #1e293b' }, 
+              }}
+            >
+              <Aside />
+            </Drawer>
+
+            {/* 2. DESKTOP SIDEBAR (Permanent) */}
+            <Box sx={{ display: { xs: 'none', md: 'block' }, width: 256, flexShrink: 0 }}>
+              <Aside />
+            </Box>
+
+            {/* 3. MAIN CONTENT & FOOTER */}
+            <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+
+              {/* Scrollable Page Content */}
+              <Box component="main" className="bg-black" sx={{ flexGrow: 1, overflowY: 'auto' }}>
+                {children}
+              </Box>
+
+              {/* Pinned Footer (Always visible at the bottom) */}
+              <Footer />
+
+            </Box>
+
+          </Box>
+        </Box>
+      </ThemeProvider>
+    </SessionProvider>
   );
 };
+
 export default PageWrapper;

@@ -5,7 +5,7 @@ import { FaHome, FaUpload, FaLock, FaInfoCircle } from 'react-icons/fa';
 
 const Aside: React.FC = () => {
   return (
-    <aside className="shrink-0 flex flex-col w-64 bg-slate-900 border-r border-slate-800 p-4">
+    <aside className="flex flex-col w-full h-full bg-slate-900 p-4">
       
       <nav className="flex flex-col gap-2 mt-4">
         {/* 1. Home / Landing Page */}
